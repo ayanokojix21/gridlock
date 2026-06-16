@@ -1,0 +1,13 @@
+train: train/images
+val: valid/images
+test: test/images
+
+nc: 4
+names: ['No helmet', 'Triple riding', 'Using mobile', 'Wheeling']
+
+roboflow:
+  workspace: traffic-violation-detection
+  project: tvd-kp9qw
+  version: 11
+  license: Public Domain
+  url: https://universe.roboflow.com/traffic-violation-detection/tvd-kp9qw/dataset/11

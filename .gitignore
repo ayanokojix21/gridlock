@@ -51,7 +51,6 @@ data/**/*.pb
 data/shwd/
 data/helmet_detection/
 data/weather/
-data/tvd/
 data/raw/
 data/processed/
 *.zip
