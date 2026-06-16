@@ -22,10 +22,10 @@ The system employs a 7-Stage Pipeline for end-to-end processing, routing data fr
 ```mermaid
 graph TD
     %% Styling Definitions
-    classDef input fill:#f3f4f6,stroke:#9ca3af,stroke-width:2px,color:#111827;
-    classDef mlStage fill:#eff6ff,stroke:#3b82f6,stroke-width:2px,color:#1d4ed8;
-    classDef backend fill:#fefce8,stroke:#eab308,stroke-width:2px,color:#a16207;
-    classDef frontend fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#047857;
+    classDef input fill:#1f2937,stroke:#6b7280,stroke-width:2px,color:#f9fafb;
+    classDef mlStage fill:#1e3a8a,stroke:#3b82f6,stroke-width:2px,color:#eff6ff;
+    classDef backend fill:#78350f,stroke:#eab308,stroke-width:2px,color:#fefce8;
+    classDef frontend fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#ecfdf5;
 
     subgraph Input
         A[CCTV Stream / RTSP]:::input --> B(Frame Extraction):::input
