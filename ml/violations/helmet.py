@@ -1,8 +1,8 @@
 """V1 — Helmet non-compliance (A + B + E)."""
 from __future__ import annotations
 
-from ..types import Detection, Track, compute_iou
-from .geometry import crop, make_violation
+from ..types import Detection, Track
+from .geometry import crop, make_violation, object_overlaps_vehicle
 
 
 def check_helmet(frame, track: Track, persons: list[Detection], classifier,
@@ -14,7 +14,7 @@ def check_helmet(frame, track: Track, persons: list[Detection], classifier,
     persist = cfg.get("persist_frames", 3)
 
     riders = [p for p in persons if p.cls_name == "person"
-              and compute_iou(track.bbox, p.bbox) > rider_iou]
+              and object_overlaps_vehicle(track.bbox, p.bbox, rider_iou)]
 
     violated = False
     best_conf = 0.0

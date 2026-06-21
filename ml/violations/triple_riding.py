@@ -1,8 +1,8 @@
 """V3 — Triple riding (A + B). Pure logic — IoU person count on two-wheeler."""
 from __future__ import annotations
 
-from ..types import Detection, Track, compute_iou
-from .geometry import make_violation
+from ..types import Detection, Track
+from .geometry import make_violation, object_overlaps_vehicle
 
 
 def check_triple_riding(track: Track, persons: list[Detection], cfg: dict,
@@ -13,7 +13,7 @@ def check_triple_riding(track: Track, persons: list[Detection], cfg: dict,
 
     rider_count = sum(
         1 for p in persons
-        if p.cls_name == "person" and compute_iou(track.bbox, p.bbox) > rider_iou
+        if p.cls_name == "person" and object_overlaps_vehicle(track.bbox, p.bbox, rider_iou)
     )
 
     if rider_count >= min_riders:

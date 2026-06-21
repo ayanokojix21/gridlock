@@ -15,7 +15,7 @@ calibration:
 detection:
   vehicle_conf: 0.25
   person_conf: 0.30
-  plate_conf: 0.30
+  plate_conf: 0.10
   iou: 0.70
   imgsz_gpu: 640
   imgsz_cpu: 480
@@ -23,13 +23,13 @@ detection:
 # Per-violation tuning
 violations:
   helmet:        { conf: 0.80, persist_frames: 3,  rider_iou: 0.30, head_frac: 0.30, fine: 1000, code: "S129" }
-  seatbelt:      { conf: 0.80, persist_frames: 3,  windshield_top: 0.40, windshield_side: 0.15, fine: 1000, code: "S138(3)" }
+  seatbelt:      { conf: 0.50, persist_frames: 1,  windshield_top: 0.40, windshield_side: 0.15, fine: 1000, code: "S138(3)" }
   triple_riding: { rider_iou: 0.30, min_riders: 3, persist_frames: 5, fine: 1000, code: "S128" }
   wrong_side:    { min_trajectory: 10, angle_deg: 120, persist_frames: 10, fine: 5000, code: "S184" }
   stop_line:     { persist_frames: 1, fine: 1000, code: "S177A" }
   red_light:     { persist_frames: 1, fine: 5000, code: "S119/177" }
   illegal_parking: { stationary_seconds: 30, max_displacement_px: 5.0, fine: 500, code: "S122/177" }
-  no_plate:      { plate_iou: 0.10, missing_frames: 45, skip_classes: ["Bicycle", "Three-wheeler", "Two-wheeler"], fine: 5000, code: "S39" }
+  no_plate:      { plate_iou: 0.10, missing_frames: 9999, skip_classes: ["Bicycle", "Three-wheeler", "Two-wheeler"], fine: 5000, code: "S39" }
 
 # OCR
 ocr:

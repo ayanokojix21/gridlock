@@ -3,8 +3,8 @@ from __future__ import annotations
 
 from .base import YoloDetectorBase
 
-# RISEF model class order: 0 -> seatbelt, 1 -> no_seatbelt (verify on real weights)
-SEATBELT_NAMES = {0: "seatbelt", 1: "no_seatbelt"}
+# RISEF model class order: 0 -> no_seatbelt, 1 -> seatbelt (verified on real weights)
+SEATBELT_NAMES = {0: "no_seatbelt", 1: "seatbelt"}
 
 
 class SeatbeltDetector(YoloDetectorBase):

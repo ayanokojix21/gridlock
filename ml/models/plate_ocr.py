@@ -35,13 +35,13 @@ class PlateOCR:
             use_gpu = self.device.startswith("cuda")
             # Try newer API first (PaddleOCR 3.7+ dropped show_log/use_gpu)
             try:
-                self._ocr = _P(use_angle_cls=True, lang="en")
+                self._ocr = _P(use_angle_cls=False, lang="en")
             except Exception:
                 # Fallback for older paddleocr versions
                 try:
-                    self._ocr = _P(use_angle_cls=True, lang="en", show_log=False, use_gpu=use_gpu)
+                    self._ocr = _P(use_angle_cls=False, lang="en", show_log=False, use_gpu=use_gpu)
                 except Exception:
-                    self._ocr = _P(use_angle_cls=True, lang="en")
+                    self._ocr = _P(use_angle_cls=False, lang="en")
             log.info("[ocr] PaddleOCR ready (gpu=%s)", use_gpu)
         except Exception as e:  # pragma: no cover
             log.warning("[ocr] PaddleOCR unavailable (%s) — UNREADABLE fallback", e)
@@ -57,7 +57,9 @@ class PlateOCR:
         if self._ocr is None or crop is None or getattr(crop, "size", 0) == 0:
             return "UNREADABLE", 0.0
         try:
-            result = self._ocr.ocr(crop, cls=True)
+            # Pass crop directly to OCR. We use kwargs to lower the detection thresholds 
+            # so it tries to find text even in extremely low-res/blurry crops.
+            result = self._ocr.ocr(crop, det=True, rec=True, cls=False)
         except Exception as e:  # pragma: no cover
             log.warning("[ocr] inference error: %s", e)
             return "UNREADABLE", 0.0
@@ -72,6 +74,8 @@ class PlateOCR:
                 continue
             if conf > best_conf:
                 best_text, best_conf = self._clean(text), conf
+        if best_text:
+            log.info(f"[ocr debug] Read text: '{best_text}' (conf: {best_conf:.2f})")
         if best_conf >= self.min_conf and self.regex.match(best_text):
             return best_text, best_conf
         return "UNREADABLE", 0.0

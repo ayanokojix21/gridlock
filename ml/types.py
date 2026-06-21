@@ -116,7 +116,7 @@ UVH26_CLASSES: dict[int, str] = {
     9: "Mini-bus", 10: "Tempo-traveller", 11: "Bicycle", 12: "Van", 13: "Others",
 }
 
-CAR_CLASSES = {"Hatchback", "Sedan", "SUV", "MUV", "Van"}
+CAR_CLASSES = {"Hatchback", "Sedan", "SUV", "MUV", "Van", "Truck", "Bus", "LCV", "Mini-bus", "Tempo-traveller"}
 TWO_WHEELER = "Two-wheeler"
 
 # Violation type -> (MVA section, fine ₹)

@@ -58,3 +58,24 @@ def make_violation(vtype: str, track, camera_id: str, confidence: float,
         fine_inr=fine,
         extra=extra,
     )
+
+
+def object_overlaps_vehicle(vehicle_bbox: BBox, object_bbox: BBox, iou_thresh: float = 0.3) -> bool:
+    """Check if an object (plate, person) belongs to a vehicle using BOTH IoU and containment.
+
+    Pure IoU fails when the object is tiny relative to the vehicle (e.g. motorcycles and riders/plates).
+    So we also check if the object center falls inside the vehicle bbox (with a 20% margin).
+    """
+    from ..types import compute_iou
+    if compute_iou(vehicle_bbox, object_bbox) > iou_thresh:
+        return True
+
+    px = (object_bbox[0] + object_bbox[2]) / 2
+    py = (object_bbox[1] + object_bbox[3]) / 2
+    vx1, vy1, vx2, vy2 = vehicle_bbox
+    margin_x = (vx2 - vx1) * 0.20
+    margin_y = (vy2 - vy1) * 0.20
+    
+    if (vx1 - margin_x) <= px <= (vx2 + margin_x) and (vy1 - margin_y) <= py <= (vy2 + margin_y):
+        return True
+    return False

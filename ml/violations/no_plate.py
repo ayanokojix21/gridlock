@@ -12,31 +12,8 @@ Fixed Issues (June 20, 2026):
 """
 from __future__ import annotations
 
-from ..types import Detection, Track, compute_iou
-from .geometry import make_violation
-
-
-def _plate_overlaps_vehicle(vehicle_bbox, plate_bbox, iou_thresh: float) -> bool:
-    """Check if a plate belongs to a vehicle using BOTH IoU and containment.
-
-    Pure IoU fails when the plate is tiny relative to the vehicle (motorcycles).
-    So we also check if the plate center falls inside the vehicle bbox.
-    """
-    # Method 1: Standard IoU (works for cars)
-    if compute_iou(vehicle_bbox, plate_bbox) > iou_thresh:
-        return True
-
-    # Method 2: Plate center inside vehicle bbox (works for motorcycles)
-    px = (plate_bbox[0] + plate_bbox[2]) / 2
-    py = (plate_bbox[1] + plate_bbox[3]) / 2
-    vx1, vy1, vx2, vy2 = vehicle_bbox
-    # Allow some margin (20% expansion) since plate may be slightly outside bbox
-    margin_x = (vx2 - vx1) * 0.20
-    margin_y = (vy2 - vy1) * 0.20
-    if (vx1 - margin_x) <= px <= (vx2 + margin_x) and (vy1 - margin_y) <= py <= (vy2 + margin_y):
-        return True
-
-    return False
+from ..types import Detection, Track
+from .geometry import make_violation, object_overlaps_vehicle
 
 
 def check_no_plate(track: Track, plates: list[Detection], cfg: dict,
@@ -46,7 +23,7 @@ def check_no_plate(track: Track, plates: list[Detection], cfg: dict,
     skip = set(cfg.get("skip_classes", ["Bicycle", "Three-wheeler", "Two-wheeler"]))
 
     has_plate = any(
-        _plate_overlaps_vehicle(track.bbox, p.bbox, plate_iou)
+        object_overlaps_vehicle(track.bbox, p.bbox, plate_iou)
         for p in plates
     )
     if has_plate:

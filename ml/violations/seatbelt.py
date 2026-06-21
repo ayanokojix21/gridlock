@@ -14,8 +14,7 @@ def check_seatbelt(frame, track: Track, seatbelt_model, cfg: dict,
     side = cfg.get("windshield_side", 0.15)
 
     x1, y1, x2, y2 = track.bbox
-    w, h = x2 - x1, y2 - y1
-    windshield = crop(frame, (x1 + w * side, y1, x2 - w * side, y1 + h * top))
+    windshield = crop(frame, (x1, y1, x2, y2))
     if windshield is None:
         track.seatbelt_violation_frames = 0
         return

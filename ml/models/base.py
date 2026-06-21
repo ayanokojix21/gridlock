@@ -82,15 +82,30 @@ class YoloDetectorBase:
         if not results:
             return out
         boxes = getattr(results[0], "boxes", None)
-        if boxes is None:
+        if boxes is not None and len(boxes) > 0:
+            for b in boxes:
+                xyxy = b.xyxy[0].tolist()
+                cls_id = int(b.cls[0])
+                out.append(
+                    Detection(
+                        bbox=(xyxy[0], xyxy[1], xyxy[2], xyxy[3]),
+                        confidence=float(b.conf[0]),
+                        cls_id=cls_id,
+                        cls_name=self._map_class(cls_id),
+                        source=self.source,
+                    )
+                )
             return out
-        for b in boxes:
-            xyxy = b.xyxy[0].tolist()
-            cls_id = int(b.cls[0])
+        
+        # Fallback for YOLO Image Classification models (like the seatbelt model)
+        probs = getattr(results[0], "probs", None)
+        if probs is not None:
+            cls_id = int(probs.top1)
+            conf = float(probs.top1conf)
             out.append(
                 Detection(
-                    bbox=(xyxy[0], xyxy[1], xyxy[2], xyxy[3]),
-                    confidence=float(b.conf[0]),
+                    bbox=(0.0, 0.0, 0.0, 0.0),  # dummy bbox for classification
+                    confidence=conf,
                     cls_id=cls_id,
                     cls_name=self._map_class(cls_id),
                     source=self.source,
